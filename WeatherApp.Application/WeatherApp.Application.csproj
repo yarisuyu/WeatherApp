@@ -11,12 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
     <Folder Include="DTOs\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ErrorOr" Version="2.1.1" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.2.0" />
   </ItemGroup>
 
