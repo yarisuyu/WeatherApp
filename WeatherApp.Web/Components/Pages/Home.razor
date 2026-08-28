@@ -1,4 +1,73 @@
 ﻿@page "/"
+@using WeatherApp.Application.Queries
+@using WeatherApp.Application.DTOs
+@inject IMediator Mediator
 
-<PageTitle>Погода в Москве</PageTitle>
+<h3>Погода в Москве</h3>
+
+@if (_isLoading)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Загрузка...</span>
+    </div>
+}
+else if (_error != null)
+{
+    <div class="alert alert-danger">
+        @_error
+        <button class="btn btn-primary" @onclick="LoadWeather">Повторить</button>
+    </div>
+}
+else if (_dashboard != null)
+{
+    <div>
+        <h4>Текущая погода</h4>
+        <!-- Здесь будет детальное отображение -->
+        <p>Температура: @_dashboard.CurrentWeather.TemperatureCelsius °C</p>
+        <p>Описание: @_dashboard.CurrentWeather.ConditionText</p>
+        <!-- Добавьте остальные поля -->
+    </div>
+}
+
+@code {
+    private WeatherDashboardDto? _dashboard;
+    private bool _isLoading;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadWeather();
+    }
+
+    private async Task LoadWeather()
+    {
+        _isLoading = true;
+        _error = null;
+        _dashboard = null;
+
+        try
+        {
+            // Координаты Москвы
+            var query = new GetWeatherQuery(55.7558, 37.6173);
+            var result = await Mediator.Send(query);
+
+            if (result.IsError)
+            {
+                _error = result.FirstError.Description;
+            }
+            else
+            {
+                _dashboard = result.Value;
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = "Не удалось загрузить данные о погоде. Попробуйте позже.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}
 
