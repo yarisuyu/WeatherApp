@@ -1,12 +1,13 @@
 ﻿using ErrorOr;
 using MediatR;
+using Mapster;
 using WeatherApp.Application.Common.Interfaces;
-using WeatherApp.Domain.Entities;
+using WeatherApp.Application.DTOs;
 
 
 namespace WeatherApp.Application.Queries
 {
-    public class GetWeatherQueryHandler : IRequestHandler<GetWeatherQuery, ErrorOr<WeatherData>>
+    public class GetWeatherQueryHandler : IRequestHandler<GetWeatherQuery, ErrorOr<WeatherDashboardDto>>
     {
         private readonly IWeatherApiClient _weatherApiClient;
 
@@ -15,13 +16,18 @@ namespace WeatherApp.Application.Queries
             _weatherApiClient = weatherApiClient;
         }
 
-        public async Task<ErrorOr<WeatherData>> Handle(GetWeatherQuery request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<WeatherDashboardDto>> Handle(GetWeatherQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 // Просто вызываем наш интерфейс и возвращаем результат
                 var weatherData = await _weatherApiClient.GetWeatherDataAsync(request.Latitude, request.Longitude, cancellationToken);
-                return weatherData;
+                // 2. Маппим доменную сущность в DTO
+                var dashboardDto = weatherData.Adapt<WeatherDashboardDto>();
+                Console.Write(weatherData);
+
+                // 3. Возвращаем успешный результат
+                return dashboardDto;
             }
             catch (HttpRequestException ex)
             {

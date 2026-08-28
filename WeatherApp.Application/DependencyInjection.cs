@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -19,6 +20,9 @@ namespace WeatherApp.Application
 
             // Регистрация FluentValidation
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+            // Регистрация Mapster
+            TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
             return services;
         }
