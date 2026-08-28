@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using MediatR;
-using WeatherApp.Application.Interfaces;
+using WeatherApp.Application.Common.Interfaces;
 using WeatherApp.Domain.Entities;
 
 

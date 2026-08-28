@@ -1,6 +1,6 @@
 ﻿using WeatherApp.Domain.Entities;
 
-namespace WeatherApp.Application.Interfaces
+namespace WeatherApp.Application.Common.Interfaces
 {
     public interface IWeatherApiClient
     {
