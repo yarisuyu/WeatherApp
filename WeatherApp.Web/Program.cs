@@ -1,6 +1,6 @@
 using WeatherApp.Application;
-using WeatherApp.Application.Interfaces;
-using WeatherApp.Application.Queries;
+using WeatherApp.Application.Common.Interfaces;
+using WeatherApp.Infrastructure;
 using WeatherApp.Infrastructure.Services;
 using WeatherApp.Web.Components;
 
@@ -13,6 +13,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<IWeatherApiClient, WeatherApiClient>();
 builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
