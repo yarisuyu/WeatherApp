@@ -2,6 +2,8 @@
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using WeatherApp.Application.Common.Interfaces;
+using WeatherApp.Application.Services;
 
 namespace WeatherApp.Application
 {
@@ -18,6 +20,9 @@ namespace WeatherApp.Application
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
 
+            services.AddMemoryCache();
+            services.AddScoped<IWeatherDataProvider, WeatherDataProvider>();
+            
             // Регистрация FluentValidation
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

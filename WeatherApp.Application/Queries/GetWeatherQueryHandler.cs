@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
-using MediatR;
 using Mapster;
+using MediatR;
 using WeatherApp.Application.Common.Interfaces;
 using WeatherApp.Application.DTOs;
 
@@ -9,23 +9,20 @@ namespace WeatherApp.Application.Queries
 {
     public class GetWeatherQueryHandler : IRequestHandler<GetCurrentWeatherQuery, ErrorOr<CurrentWeatherResponseDto>>
     {
-        private readonly IWeatherApiClient _weatherApiClient;
+        private readonly IWeatherDataProvider _provider;
 
-        public GetWeatherQueryHandler(IWeatherApiClient weatherApiClient)
+        public GetWeatherQueryHandler(IWeatherDataProvider provider)
         {
-            _weatherApiClient = weatherApiClient;
+            _provider = provider;
         }
 
         public async Task<ErrorOr<CurrentWeatherResponseDto>> Handle(GetCurrentWeatherQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                // Просто вызываем наш интерфейс и возвращаем результат
-                var weatherData = await _weatherApiClient.GetCurrentWeatherAsync(request.Latitude, request.Longitude, cancellationToken);
-                // 2. Маппим доменную сущность в DTO
+                var weatherData = await _provider.GetCurrentWeatherAsync(request.Latitude, request.Longitude, cancellationToken);
                 var responseDto = weatherData.Adapt<CurrentWeatherResponseDto>();
 
-                // 3. Возвращаем успешный результат
                 return responseDto;
             }
             catch (HttpRequestException ex)
