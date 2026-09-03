@@ -10,7 +10,13 @@
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Текущая погода
+            </NavLink>
+            <NavLink class="nav-link" href="hourly" Match="NavLinkMatch.Prefix">
+                <span class="bi bi-clock-history"></span> Почасовой прогноз
+            </NavLink>
+            <NavLink class="nav-link" href="daily" Match="NavLinkMatch.Prefix">
+                <span class="bi bi-clock-history"></span> Прогноз на 3 дня
             </NavLink>
         </div>
     </nav>

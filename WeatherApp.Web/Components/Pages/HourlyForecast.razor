@@ -1,9 +1,9 @@
-﻿@page "/"
+﻿@page "/hourly"
 @using WeatherApp.Application.Queries
 @using WeatherApp.Application.DTOs
 @inject IMediator Mediator
 
-<h3>Погода в Москве</h3>
+<h3>Почасовой прогноз погоды в Москве</h3>
 
 @if (_isLoading)
 {
@@ -15,43 +15,44 @@ else if (_error != null)
 {
     <div class="alert alert-danger">
         @_error
-        <button class="btn btn-primary" @onclick="LoadWeather">Повторить</button>
+        <button class="btn btn-primary" @onclick="LoadForecast">Повторить</button>
     </div>
 }
-else if (_dashboard != null)
+else if (_forecast != null)
 {
     <div>
-        <h4>Текущая погода</h4>
-        <p>Температура: @_dashboard.CurrentWeather.TemperatureCelsius °C</p>
-        <p>Описание: @_dashboard.CurrentWeather.ConditionText</p>
-        <p>Время измерения: @_dashboard.CurrentWeather.LastUpdated</p>
-        <p>Скорость ветра: @_dashboard.CurrentWeather.WindSpeedKph км/ч</p>
-        <p>Влажность: @_dashboard.CurrentWeather.HumidityPercent %</p>
-        <p>Ощущается как: @_dashboard.CurrentWeather.FeelsLikeCelsius °C</p>
-        <p>УФ-индекс: @_dashboard.CurrentWeather.UvIndex</p>
+        @foreach (var hourlyForecast in _forecast.HourlyForecasts) {
+            <div>
+                <p><b>Время: @hourlyForecast.Time </b></p>
+                <p>Tемпература: @hourlyForecast.TemperatureCelsius °C</p>
+                <p>Скорость ветра: @hourlyForecast.WindSpeedKph км/ч</p>
+                <p>Влажность: @hourlyForecast.HumidityPercent %</p>
+                <p>Описание: @hourlyForecast.ConditionText</p>
+            </div>
+        }
     </div>
 }
 
 @code {
-    private CurrentWeatherResponseDto? _dashboard;
+    private ForecastResponseDto? _forecast;
     private bool _isLoading;
     private string? _error;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadWeather();
+        await LoadForecast();
     }
 
-    private async Task LoadWeather()
+    private async Task LoadForecast()
     {
         _isLoading = true;
         _error = null;
-        _dashboard = null;
+        _forecast = null;
 
         try
         {
             // Координаты Москвы
-            var query = new GetCurrentWeatherQuery(55.7522, 37.6156);
+            var query = new GetForecastQuery(55.7558, 37.6173, 1);
             var result = await Mediator.Send(query);
 
             if (result.IsError)
@@ -60,10 +61,10 @@ else if (_dashboard != null)
             }
             else
             {
-                _dashboard = result.Value;
+                _forecast = result.Value;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             _error = "Не удалось загрузить данные о погоде. Попробуйте позже.";
         }

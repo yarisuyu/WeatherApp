@@ -1,0 +1,79 @@
+﻿@page "/daily"
+@using WeatherApp.Application.Queries
+@using WeatherApp.Application.DTOs
+@inject IMediator Mediator
+
+<h3>Прогноз погоды в Москве</h3>
+
+@if (_isLoading)
+{
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Загрузка...</span>
+    </div>
+}
+else if (_error != null)
+{
+    <div class="alert alert-danger">
+        @_error
+        <button class="btn btn-primary" @onclick="LoadForecast">Повторить</button>
+    </div>
+}
+else if (_forecast != null)
+{
+    <div>
+        @foreach (var dailyForecast in _forecast.DailyForecasts)
+        {
+            <div>
+                <p><b>Дата: @dailyForecast.Date.ToShortDateString()</b></p>
+                <p>Минимальная температура: @dailyForecast.MinTemperatureCelsius °C</p>
+                <p>Максимальная температура: @dailyForecast.MaxTemperatureCelsius °C</p>
+                <p>Средняя температура: @dailyForecast.AvgTemperatureCelsius °C</p>
+                <p>Описание: @dailyForecast.ConditionText</p>
+                <p style="margin-bottom: 2rem;">Общее количество осадков: @dailyForecast.TotalPrecipitationMm %</p>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private ForecastResponseDto? _forecast;
+    private bool _isLoading;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadForecast();
+    }
+
+    private async Task LoadForecast()
+    {
+        _isLoading = true;
+        _error = null;
+        _forecast = null;
+
+        try
+        {
+            // Координаты Москвы
+            var query = new GetForecastQuery(55.7558, 37.6173, 3);
+            var result = await Mediator.Send(query);
+
+            if (result.IsError)
+            {
+                _error = result.FirstError.Description;
+            }
+            else
+            {
+                _forecast = result.Value;
+            }
+        }
+        catch (Exception)
+        {
+            _error = "Не удалось загрузить данные о погоде. Попробуйте позже.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+}
+
