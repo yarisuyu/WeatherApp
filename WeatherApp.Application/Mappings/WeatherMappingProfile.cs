@@ -29,10 +29,14 @@ namespace WeatherApp.Application.Mappings
                 .Map(dest => dest.MinTemperatureCelsius, src => src.MinTemperature.Celsius)
                 .Map(dest => dest.AvgTemperatureCelsius, src => src.AvgTemperature.Celsius);
 
-            // Маппинг WeatherData -> WeatherDashboardDto
-            config.NewConfig<WeatherData, WeatherDashboardDto>()
+            // Маппинг WeatherData -> WeatherRespoonseDto
+            config.NewConfig<WeatherData, CurrentWeatherResponseDto>()
                 .Map(dest => dest.Location, src => src.Location)
-                .Map(dest => dest.CurrentWeather, src => src.Current)
+                .Map(dest => dest.CurrentWeather, src => src.Current);
+
+            // Маппинг ForecastData -> ForecastRespoonseDto
+            config.NewConfig<ForecastData, ForecastResponseDto>()
+                .Map(dest => dest.Location, src => src.Location)
                 .Map(dest => dest.HourlyForecasts, src => src.HourlyForecasts)
                 .Map(dest => dest.DailyForecasts, src => src.DailyForecasts);
         }

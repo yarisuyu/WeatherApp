@@ -21,14 +21,12 @@ namespace WeatherApp.Infrastructure.Services
             _options = options.Value;
         }
 
-        public async Task<WeatherData> GetWeatherDataAsync(double lat, double lon, CancellationToken ct = default)
+        public async Task<WeatherData> GetCurrentWeatherAsync(double lat, double lon, CancellationToken ct = default)
         {
             // Запрос текущей погоды
             var currentUrl = $"{_options.BaseUrl}/current.json?key={_options.ApiKey}&q={lat},{lon}";
             var currentResponse = await _httpClient.GetFromJsonAsync<CurrentWeatherResponse>(currentUrl, ct)
                 ?? throw new Exception("Failed to get current weather");
-
-            Console.Write(currentResponse);
 
             // Преобразуем ответы в доменные сущности
             var location = new Location(
@@ -46,7 +44,47 @@ namespace WeatherApp.Infrastructure.Services
                 Temperature.FromCelsius(currentResponse.Current.FeelsLikeC),
                 currentResponse.Current.Uv);
 
-            return new WeatherData(location, currentWeather, [], []);
+            return new WeatherData(location, currentWeather);
+        }
+
+        public async Task<ForecastData> GetForecastAsync(double lat, double lon, int dayCount, CancellationToken ct = default)
+        {
+            // Запрос прогноза на 3 дня
+            var forecastUrl = $"{_options.BaseUrl}/forecast.json?key={_options.ApiKey}&q={lat},{lon}&days={dayCount}";
+            var forecastResponse = await _httpClient.GetFromJsonAsync<ForecastResponse>(forecastUrl, ct)
+                ?? throw new Exception("Failed to get forecast");
+
+            // Преобразуем ответы в доменные сущности
+            var location = new Location(
+                forecastResponse.Location.Name,
+                forecastResponse.Location.Lat,
+                forecastResponse.Location.Lon);
+
+            // Почасовой прогноз (все часы из forecast)
+            var hourlyForecasts = forecastResponse.Forecast.ForecastDay
+                .SelectMany(day => day.Hour)
+                .Select(h => new HourlyForecast(
+                    DateTime.Parse(h.Time),
+                    Temperature.FromCelsius(h.TempC),
+                    h.Condition.Code,
+                    h.Condition.Text,
+                    WindSpeed.FromKph(h.WindKph),
+                    h.Humidity))
+                .ToList();
+
+            // Дневной прогноз (3 дня)
+            var dailyForecasts = forecastResponse.Forecast.ForecastDay
+                .Select(d => new DailyForecast(
+                    DateTime.Parse(d.Date),
+                    Temperature.FromCelsius(d.Day.MaxTempC),
+                    Temperature.FromCelsius(d.Day.MinTempC),
+                    Temperature.FromCelsius(d.Day.AvgTempC),
+                    d.Day.Condition.Code,
+                    d.Day.Condition.Text,
+                    d.Day.TotalPrecipMm))
+                .ToList();
+
+            return new ForecastData(location, hourlyForecasts, dailyForecasts);
         }
     }
 }
