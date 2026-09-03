@@ -64,7 +64,7 @@ else if (_forecast != null)
                 _forecast = result.Value;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _error = "Не удалось загрузить данные о погоде. Попробуйте позже.";
         }

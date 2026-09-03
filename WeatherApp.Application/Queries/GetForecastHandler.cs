@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
-using MediatR;
 using Mapster;
+using MediatR;
 using WeatherApp.Application.Common.Interfaces;
 using WeatherApp.Application.DTOs;
 
@@ -9,23 +9,20 @@ namespace WeatherApp.Application.Queries
 {
     public class GetForecastHandler : IRequestHandler<GetForecastQuery, ErrorOr<ForecastResponseDto>>
     {
-        private readonly IWeatherApiClient _weatherApiClient;
+        private readonly IWeatherDataProvider _provider;
 
-        public GetForecastHandler(IWeatherApiClient weatherApiClient)
+        public GetForecastHandler(IWeatherDataProvider provider)
         {
-            _weatherApiClient = weatherApiClient;
+            _provider = provider;
         }
 
         public async Task<ErrorOr<ForecastResponseDto>> Handle(GetForecastQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                // Просто вызываем наш интерфейс и возвращаем результат
-                var forecastData = await _weatherApiClient.GetForecastAsync(request.Latitude, request.Longitude, request.DayCount, cancellationToken);
-                // 2. Маппим доменную сущность в DTO
+                var forecastData = await _provider.GetForecastAsync(request.Latitude, request.Longitude, request.DayCount, cancellationToken);
                 var forecastDto = forecastData.Adapt<ForecastResponseDto>();
 
-                // 3. Возвращаем успешный результат
                 return forecastDto;
             }
             catch (HttpRequestException ex)
