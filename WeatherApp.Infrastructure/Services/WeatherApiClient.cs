@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Globalization;
 using System.Net.Http.Json;
-using System.Text.Json;
 using WeatherApp.Application.Common.Interfaces;
 using WeatherApp.Domain.Entities;
 using WeatherApp.Domain.ValueObjects;
@@ -24,7 +24,10 @@ namespace WeatherApp.Infrastructure.Services
         public async Task<WeatherData> GetCurrentWeatherAsync(double lat, double lon, CancellationToken ct = default)
         {
             // Запрос текущей погоды
-            var currentUrl = $"{_options.BaseUrl}/current.json?key={_options.ApiKey}&q={lat},{lon}";
+
+            var latStr = lat.ToString(CultureInfo.InvariantCulture);
+            var lonStr = lon.ToString(CultureInfo.InvariantCulture);
+            var currentUrl = $"{_options.BaseUrl}/current.json?key={_options.ApiKey}&q={latStr},{lonStr}";
             var currentResponse = await _httpClient.GetFromJsonAsync<CurrentWeatherResponse>(currentUrl, ct)
                 ?? throw new Exception("Failed to get current weather");
 
@@ -50,7 +53,9 @@ namespace WeatherApp.Infrastructure.Services
         public async Task<ForecastData> GetForecastAsync(double lat, double lon, int dayCount, CancellationToken ct = default)
         {
             // Запрос прогноза на 3 дня
-            var forecastUrl = $"{_options.BaseUrl}/forecast.json?key={_options.ApiKey}&q={lat},{lon}&days={dayCount}";
+            var latStr = lat.ToString(CultureInfo.InvariantCulture);
+            var lonStr = lon.ToString(CultureInfo.InvariantCulture);
+            var forecastUrl = $"{_options.BaseUrl}/forecast.json?key={_options.ApiKey}&q={latStr},{lonStr}&days={dayCount}";
             var forecastResponse = await _httpClient.GetFromJsonAsync<ForecastResponse>(forecastUrl, ct)
                 ?? throw new Exception("Failed to get forecast");
 
