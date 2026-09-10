@@ -8,7 +8,7 @@
         private WindSpeed(double kph)
         {
             if (kph < 0)
-                throw new ArgumentException("Скорость ветра не может быть отрицательной.", nameof(kph));
+                throw new ArgumentException("Wind speed cannot be negative.", nameof(kph));
             Kph = kph;
         }
 

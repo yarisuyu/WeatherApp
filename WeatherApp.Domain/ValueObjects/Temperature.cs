@@ -7,12 +7,10 @@
         private Temperature(double celsius)
         {
             if (celsius < -273.15)
-                throw new ArgumentException("Температура по Цельсию не должна быть ниже абсолютного нуля.", nameof(celsius));
+                throw new ArgumentException("Temperature cannot be below absolute zero.", nameof(celsius));
             Celsius = celsius;
         }
 
         public static Temperature FromCelsius(double celsius) => new(celsius);
-
-        public override string ToString() => $"{Celsius:F1}°C";
     }
 }
