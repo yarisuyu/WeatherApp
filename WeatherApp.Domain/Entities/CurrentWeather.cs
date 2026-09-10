@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WeatherApp.Domain.ValueObjects;
+﻿using WeatherApp.Domain.ValueObjects;
 
 namespace WeatherApp.Domain.Entities
 {
@@ -37,9 +34,9 @@ namespace WeatherApp.Domain.Entities
 
             // Валидация дополнительных инвариантов
             if (humidityPercent < 0 || humidityPercent > 100)
-                throw new ArgumentOutOfRangeException(nameof(humidityPercent), "Влажность должна быть в интервале 0-100%.");
+                throw new ArgumentOutOfRangeException(nameof(humidityPercent), "Humidity value must be between 0 and 100%.");
             if (uvIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(uvIndex), "UV индекс не может быть отрицательным.");
+                throw new ArgumentOutOfRangeException(nameof(uvIndex), "UV index cannot be negative.");
         }
     }
 }

@@ -13,11 +13,11 @@ namespace WeatherApp.Domain.Entities
         public Location(string city, double latitude, double longitude)
         {
             if (string.IsNullOrWhiteSpace(city))
-                throw new ArgumentException("Название города не должно быть пустым.", nameof(city));
+                throw new ArgumentException("City name cannot be empty.", nameof(city));
             if (latitude < -90 || latitude > 90)
-                throw new ArgumentOutOfRangeException(nameof(latitude), "Значение широты должно быть между -90 и 90.");
+                throw new ArgumentOutOfRangeException(nameof(latitude), "latitude value must be between -90 and 90.");
             if (longitude < -180 || longitude > 180)
-                throw new ArgumentOutOfRangeException(nameof(longitude), "Значение долготы должно быть между -180 и 180.");
+                throw new ArgumentOutOfRangeException(nameof(longitude), "Longitude value must be between -180 and 180.");
 
             City = city;
             Latitude = latitude;
