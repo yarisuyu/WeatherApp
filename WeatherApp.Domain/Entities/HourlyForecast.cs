@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WeatherApp.Domain.ValueObjects;
+﻿using WeatherApp.Domain.ValueObjects;
 
 namespace WeatherApp.Domain.Entities
 {
@@ -24,7 +21,7 @@ namespace WeatherApp.Domain.Entities
         {
             // Валидация
             if (humidityPercent < 0 || humidityPercent > 100)
-                throw new ArgumentOutOfRangeException(nameof(humidityPercent), "Влажность должна быть 0-100%.");
+                throw new ArgumentOutOfRangeException(nameof(humidityPercent), "Humidity value must be between 0 and 100%.");
 
             Time = time;
             Temperature = temperature;

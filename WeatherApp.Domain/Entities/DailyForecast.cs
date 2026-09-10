@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using WeatherApp.Domain.ValueObjects;
+﻿using WeatherApp.Domain.ValueObjects;
 
 namespace WeatherApp.Domain.Entities
 {
@@ -25,7 +22,7 @@ namespace WeatherApp.Domain.Entities
             double totalPrecipitationMm)
         {
             if (totalPrecipitationMm < 0)
-                throw new ArgumentOutOfRangeException(nameof(totalPrecipitationMm), "Количество осадков не может быть отрицательным.");
+                throw new ArgumentOutOfRangeException(nameof(totalPrecipitationMm), "Precipitation cannot be negative.");
 
             Date = date;
             MaxTemperature = maxTemperature;
