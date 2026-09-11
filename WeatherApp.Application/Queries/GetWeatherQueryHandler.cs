@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 using WeatherApp.Application.Common.Interfaces;
 using WeatherApp.Application.DTOs;
@@ -10,10 +10,12 @@ namespace WeatherApp.Application.Queries
     public class GetWeatherQueryHandler : IRequestHandler<GetCurrentWeatherQuery, ErrorOr<CurrentWeatherResponseDto>>
     {
         private readonly IWeatherDataProvider _provider;
+        private readonly IMapper _mapper;
 
-        public GetWeatherQueryHandler(IWeatherDataProvider provider)
+        public GetWeatherQueryHandler(IWeatherDataProvider provider, IMapper mapper)
         {
             _provider = provider;
+            _mapper = mapper;
         }
 
         public async Task<ErrorOr<CurrentWeatherResponseDto>> Handle(GetCurrentWeatherQuery request, CancellationToken cancellationToken)
@@ -21,7 +23,7 @@ namespace WeatherApp.Application.Queries
             try
             {
                 var weatherData = await _provider.GetCurrentWeatherAsync(request.Latitude, request.Longitude, cancellationToken);
-                var responseDto = weatherData.Adapt<CurrentWeatherResponseDto>();
+                var responseDto = _mapper.Map<CurrentWeatherResponseDto>(weatherData);
 
                 return responseDto;
             }
