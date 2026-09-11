@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Mapster;
+using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using WeatherApp.Application.Common.Interfaces;
@@ -11,10 +12,19 @@ namespace WeatherApp.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            // Регистрация Mapster
+            var mapsterConfig = TypeAdapterConfig.GlobalSettings;
+            mapsterConfig.Scan(assembly);
+
+            services.AddSingleton(mapsterConfig);
+            services.AddScoped<IMapper, ServiceMapper>();
+
             // Регистрация MediatR
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                cfg.RegisterServicesFromAssembly(assembly);
                 // Регистрация Pipeline Behaviors в правильном порядке
                 cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
@@ -24,10 +34,7 @@ namespace WeatherApp.Application
             services.AddScoped<IWeatherDataProvider, WeatherDataProvider>();
             
             // Регистрация FluentValidation
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-            // Регистрация Mapster
-            TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(assembly);
 
             return services;
         }

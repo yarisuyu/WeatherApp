@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using Mapster;
+using MapsterMapper;
 using MediatR;
 using WeatherApp.Application.Common.Interfaces;
 using WeatherApp.Application.DTOs;
@@ -7,13 +7,15 @@ using WeatherApp.Application.DTOs;
 
 namespace WeatherApp.Application.Queries
 {
-    public class GetForecastHandler : IRequestHandler<GetForecastQuery, ErrorOr<ForecastResponseDto>>
+    public class GetForecastQueryHandler : IRequestHandler<GetForecastQuery, ErrorOr<ForecastResponseDto>>
     {
         private readonly IWeatherDataProvider _provider;
+        private readonly IMapper _mapper;
 
-        public GetForecastHandler(IWeatherDataProvider provider)
+        public GetForecastQueryHandler(IWeatherDataProvider provider, IMapper mapper)
         {
             _provider = provider;
+            _mapper = mapper;
         }
 
         public async Task<ErrorOr<ForecastResponseDto>> Handle(GetForecastQuery request, CancellationToken cancellationToken)
@@ -21,7 +23,7 @@ namespace WeatherApp.Application.Queries
             try
             {
                 var forecastData = await _provider.GetForecastAsync(request.Latitude, request.Longitude, request.DayCount, cancellationToken);
-                var forecastDto = forecastData.Adapt<ForecastResponseDto>();
+                var forecastDto = _mapper.Map<ForecastResponseDto>(forecastData);
 
                 return forecastDto;
             }
