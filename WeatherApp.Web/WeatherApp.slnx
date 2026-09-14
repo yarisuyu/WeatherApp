@@ -6,6 +6,7 @@
     <Project Path="WeatherApp.Web.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="../WeatherApp.Application.UnitTests/WeatherApp.Application.UnitTests.csproj" />
     <Project Path="../WeatherApp.Domain.UnitTests/WeatherApp.Domain.UnitTests.csproj" />
   </Folder>
 </Solution>
