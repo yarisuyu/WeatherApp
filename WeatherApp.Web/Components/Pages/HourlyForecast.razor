@@ -52,7 +52,7 @@ else if (_forecast != null)
         try
         {
             // Координаты Москвы
-            var query = new GetForecastQuery(55.7558, 37.6173, 1);
+            var query = new GetForecastQuery(55.7558, 37.6173, 3);
             var result = await Mediator.Send(query);
 
             if (result.IsError)

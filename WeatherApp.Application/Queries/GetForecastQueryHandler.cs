@@ -11,11 +11,16 @@ public class GetForecastQueryHandler : IRequestHandler<GetForecastQuery, ErrorOr
 {
     private readonly IWeatherDataProvider _provider;
     private readonly IMapper _mapper;
+    private readonly TimeProvider _timeProvider;
 
-    public GetForecastQueryHandler(IWeatherDataProvider provider, IMapper mapper)
+    public GetForecastQueryHandler(
+        IWeatherDataProvider provider,
+        IMapper mapper,
+        TimeProvider timeProvider)
     {
         _provider = provider;
         _mapper = mapper;
+        _timeProvider = timeProvider;
     }
 
     public async Task<ErrorOr<ForecastResponseDto>> Handle(GetForecastQuery request, CancellationToken cancellationToken)
@@ -31,17 +36,21 @@ public class GetForecastQueryHandler : IRequestHandler<GetForecastQuery, ErrorOr
                     description: "Провайдер вернул пустой результат.");
             }
 
-            var forecastDto = _mapper.Map<ForecastResponseDto>(forecastData);
+            // Фильтруем часы: оставшиеся сегодня + все завтра
+            var now = _timeProvider.GetLocalNow().DateTime;
+            var filteredHourly = forecastData
+                .GetRemainingHoursTodayAndTomorrow(now)
+                .ToList();
 
-            if (forecastDto is null)
+            // Маппим только нужные части
+            var dto = new ForecastResponseDto
             {
-                return Error.Unexpected(
-                    code: "Weather.MappingFailed",
-                    description: "Не удалось преобразовать данные о погоде.");
-            }
+                Location = _mapper.Map<LocationDto>(forecastData.Location),
+                HourlyForecasts = _mapper.Map<List<HourlyForecastDto>>(filteredHourly),
+                DailyForecasts = _mapper.Map<List<DailyForecastDto>>(forecastData.DailyForecasts)
+            };
 
-
-            return forecastDto;
+            return dto;
         }
         catch (HttpRequestException ex)
         {

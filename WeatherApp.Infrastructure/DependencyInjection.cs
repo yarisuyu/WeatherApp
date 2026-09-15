@@ -24,6 +24,8 @@ namespace WeatherApp.Infrastructure
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 
+            services.AddSingleton(TimeProvider.System);
+
             return services;
         }
     }
