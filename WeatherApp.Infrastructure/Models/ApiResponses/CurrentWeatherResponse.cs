@@ -11,18 +11,6 @@ namespace WeatherApp.Infrastructure.Models.ApiResponses
         public CurrentResponse Current { get; set; } = null!;
     }
 
-    public class LocationResponse
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
-
-        [JsonPropertyName("lat")]
-        public double Lat { get; set; }
-
-        [JsonPropertyName("lon")]
-        public double Lon { get; set; }
-    }
-
     public class CurrentResponse
     {
         [JsonPropertyName("last_updated")]
@@ -45,14 +33,5 @@ namespace WeatherApp.Infrastructure.Models.ApiResponses
 
         [JsonPropertyName("uv")]
         public double Uv { get; set; }
-    }
-
-    public class ConditionResponse
-    {
-        [JsonPropertyName("code")]
-        public int Code { get; set; }
-
-        [JsonPropertyName("text")]
-        public string Text { get; set; } = string.Empty;
     }
 }

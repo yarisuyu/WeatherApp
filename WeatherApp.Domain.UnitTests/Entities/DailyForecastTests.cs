@@ -11,6 +11,7 @@ public class DailyForecastTests
     private readonly Temperature _min = Temperature.FromCelsius(15.0);
     private readonly Temperature _avg = Temperature.FromCelsius(20.0);
     private const int ConditionCode = 1000;
+    private const string conditionIcon = "https://example.com/sunny.png";
     private const string ConditionText = "Sunny";
     private const double Precipitation = 0.5;
 
@@ -18,7 +19,7 @@ public class DailyForecastTests
     public void Constructor_WithValidData_CreatesInstance()
     {
         var forecast = new DailyForecast(
-            _date, _max, _min, _avg, ConditionCode, ConditionText, Precipitation);
+            _date, _max, _min, _avg, ConditionCode, conditionIcon, ConditionText, Precipitation);
 
         forecast.Date.Should().Be(_date);
         forecast.MaxTemperature.Should().Be(_max);
@@ -36,7 +37,7 @@ public class DailyForecastTests
     public void Constructor_WhenPrecipitationNegative_ThrowsArgumentOutOfRangeException(double invalidPrecip)
     {
         Action act = () => new DailyForecast(
-            _date, _max, _min, _avg, ConditionCode, ConditionText, invalidPrecip);
+            _date, _max, _min, _avg, ConditionCode, conditionIcon, ConditionText, invalidPrecip);
 
         act.Should().Throw<ArgumentOutOfRangeException>()
             .WithParameterName("totalPrecipitationMm");
@@ -46,7 +47,7 @@ public class DailyForecastTests
     public void Constructor_WithZeroPrecipitation_CreatesInstance()
     {
         var forecast = new DailyForecast(
-            _date, _max, _min, _avg, ConditionCode, ConditionText, 0);
+            _date, _max, _min, _avg, ConditionCode, conditionIcon, ConditionText, 0);
 
         forecast.TotalPrecipitationMm.Should().Be(0);
     }

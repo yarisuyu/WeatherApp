@@ -7,6 +7,7 @@ namespace WeatherApp.Domain.Entities
         public DateTime LastUpdated { get; }
         public Temperature Temperature { get; }
         public int ConditionCode { get; }
+        public string ConditionIcon { get; }
         public string ConditionText { get; }
         public WindSpeed WindSpeed { get; }
         public int HumidityPercent { get; }
@@ -17,6 +18,7 @@ namespace WeatherApp.Domain.Entities
             DateTime lastUpdated,
             Temperature temperature,
             int conditionCode,
+            string conditionIcon,
             string conditionText,
             WindSpeed windSpeed,
             int humidityPercent,
@@ -26,6 +28,7 @@ namespace WeatherApp.Domain.Entities
             LastUpdated = lastUpdated;
             Temperature = temperature;
             ConditionCode = conditionCode;
+            ConditionIcon = conditionIcon;
             ConditionText = conditionText;
             WindSpeed = windSpeed;
             HumidityPercent = humidityPercent;

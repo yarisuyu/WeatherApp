@@ -13,7 +13,7 @@ public class WeatherDataTests
         _current = new CurrentWeather(
             DateTime.UtcNow,
             Temperature.FromCelsius(20),
-            1000, "Sunny",
+            1000, "https://example.com/sunny.png", "Sunny",
             WindSpeed.FromKph(10),
             60,
             Temperature.FromCelsius(18),

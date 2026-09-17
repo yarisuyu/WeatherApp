@@ -41,6 +41,7 @@ namespace WeatherApp.Infrastructure.Services
                 DateTime.Parse(currentResponse.Current.LastUpdated),
                 Temperature.FromCelsius(currentResponse.Current.TempC),
                 currentResponse.Current.Condition.Code,
+                currentResponse.Current.Condition.Icon,
                 currentResponse.Current.Condition.Text,
                 WindSpeed.FromKph(currentResponse.Current.WindKph),
                 currentResponse.Current.Humidity,
@@ -72,6 +73,7 @@ namespace WeatherApp.Infrastructure.Services
                     DateTime.Parse(h.Time),
                     Temperature.FromCelsius(h.TempC),
                     h.Condition.Code,
+                    h.Condition.Icon,
                     h.Condition.Text,
                     WindSpeed.FromKph(h.WindKph),
                     h.Humidity))
@@ -85,6 +87,7 @@ namespace WeatherApp.Infrastructure.Services
                     Temperature.FromCelsius(d.Day.MinTempC),
                     Temperature.FromCelsius(d.Day.AvgTempC),
                     d.Day.Condition.Code,
+                    d.Day.Condition.Icon,
                     d.Day.Condition.Text,
                     d.Day.TotalPrecipMm))
                 .ToList();
