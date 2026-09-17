@@ -25,6 +25,7 @@ public static class WeatherTestDataFactory
         DateTime? lastUpdated = null,
         double temperatureCelsius = 22.5,
         int conditionCode = 1000,
+        string conditionIcon = "https://example.com/sunny.png",
         string conditionText = "Sunny",
         double windSpeedKph = 10.5,
         int humidityPercent = 65,
@@ -34,6 +35,7 @@ public static class WeatherTestDataFactory
             lastUpdated ?? new DateTime(2026, 9, 10, 12, 0, 0, DateTimeKind.Utc),
             Temperature.FromCelsius(temperatureCelsius),
             conditionCode,
+            conditionIcon,
             conditionText,
             WindSpeed.FromKph(windSpeedKph),
             humidityPercent,
@@ -44,6 +46,7 @@ public static class WeatherTestDataFactory
         DateTime? time = null,
         double temperatureCelsius = 18.5,
         int conditionCode = 1000,
+        string conditionIcon = "https://example.com/sunny.png",
         string conditionText = "Sunny",
         double windSpeedKph = 8.0,
         int humidityPercent = 55)
@@ -51,6 +54,7 @@ public static class WeatherTestDataFactory
             time ?? new DateTime(2026, 9, 10, 14, 0, 0, DateTimeKind.Utc),
             Temperature.FromCelsius(temperatureCelsius),
             conditionCode,
+            conditionIcon,
             conditionText,
             WindSpeed.FromKph(windSpeedKph),
             humidityPercent);
@@ -61,6 +65,7 @@ public static class WeatherTestDataFactory
         double minTemperatureCelsius = 15.0,
         double avgTemperatureCelsius = 20.0,
         int conditionCode = 1000,
+        string conditionIcon = "https://example.com/sunny.png",
         string conditionText = "Sunny",
         double totalPrecipitationMm = 0.0)
         => new(
@@ -69,6 +74,7 @@ public static class WeatherTestDataFactory
             Temperature.FromCelsius(minTemperatureCelsius),
             Temperature.FromCelsius(avgTemperatureCelsius),
             conditionCode,
+            conditionIcon,
             conditionText,
             totalPrecipitationMm);
 
@@ -76,7 +82,7 @@ public static class WeatherTestDataFactory
     /// Создаёт список часовых прогнозов, начиная с указанного времени с шагом в 1 час.
     /// </summary>
     public static List<HourlyForecast> CreateHourlyForecasts(
-        int count = 24,
+        int count = 72,
         DateTime? startTime = null)
     {
         var start = startTime ?? new DateTime(2026, 9, 10, 0, 0, 0, DateTimeKind.Utc);

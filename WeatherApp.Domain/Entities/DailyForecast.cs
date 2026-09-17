@@ -9,6 +9,7 @@ namespace WeatherApp.Domain.Entities
         public Temperature MinTemperature { get; }
         public Temperature AvgTemperature { get; }
         public int ConditionCode { get; }
+        public string ConditionIcon { get; }
         public string ConditionText { get; }
         public double TotalPrecipitationMm { get; }
 
@@ -18,6 +19,7 @@ namespace WeatherApp.Domain.Entities
             Temperature minTemperature,
             Temperature avgTemperature,
             int conditionCode,
+            string conditionIcon,
             string conditionText,
             double totalPrecipitationMm)
         {
@@ -29,6 +31,7 @@ namespace WeatherApp.Domain.Entities
             MinTemperature = minTemperature;
             AvgTemperature = avgTemperature;
             ConditionCode = conditionCode;
+            ConditionIcon = conditionIcon;
             ConditionText = conditionText;
             TotalPrecipitationMm = totalPrecipitationMm;
         }

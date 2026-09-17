@@ -11,6 +11,7 @@ public class CurrentWeatherTests
     private readonly Temperature _feelsLike = Temperature.FromCelsius(20.0);
     private readonly WindSpeed _wind = WindSpeed.FromKph(10.5);
     private const int ConditionCode = 1000;
+    private const string ConditionIcon = "https://example.com/sunny.png";
     private const string ConditionText = "Sunny";
     private const int Humidity = 65;
     private const double UvIndex = 5.0;
@@ -19,7 +20,7 @@ public class CurrentWeatherTests
     public void Constructor_WithValidData_CreatesInstance()
     {
         var weather = new CurrentWeather(
-            _lastUpdated, _temperature, ConditionCode, ConditionText,
+            _lastUpdated, _temperature, ConditionCode, ConditionIcon, ConditionText,
             _wind, Humidity, _feelsLike, UvIndex);
 
         weather.LastUpdated.Should().Be(_lastUpdated);
@@ -39,7 +40,7 @@ public class CurrentWeatherTests
     public void Constructor_WhenHumidityOutOfRange_ThrowsArgumentOutOfRangeException(int invalidHumidity)
     {
         Action act = () => new CurrentWeather(
-            _lastUpdated, _temperature, ConditionCode, ConditionText,
+            _lastUpdated, _temperature, ConditionCode, ConditionIcon, ConditionText,
             _wind, invalidHumidity, _feelsLike, UvIndex);
 
         act.Should().Throw<ArgumentOutOfRangeException>()
@@ -52,7 +53,7 @@ public class CurrentWeatherTests
     public void Constructor_WithBoundaryHumidity_CreatesInstance(int humidity)
     {
         var weather = new CurrentWeather(
-            _lastUpdated, _temperature, ConditionCode, ConditionText,
+            _lastUpdated, _temperature, ConditionCode, ConditionIcon, ConditionText,
             _wind, humidity, _feelsLike, UvIndex);
 
         weather.HumidityPercent.Should().Be(humidity);
@@ -65,7 +66,7 @@ public class CurrentWeatherTests
     public void Constructor_WhenUvIndexNegative_ThrowsArgumentOutOfRangeException(double invalidUv)
     {
         Action act = () => new CurrentWeather(
-            _lastUpdated, _temperature, ConditionCode, ConditionText,
+            _lastUpdated, _temperature, ConditionCode, ConditionIcon, ConditionText,
             _wind, Humidity, _feelsLike, invalidUv);
 
         act.Should().Throw<ArgumentOutOfRangeException>()
@@ -76,7 +77,7 @@ public class CurrentWeatherTests
     public void Constructor_WithZeroUvIndex_CreatesInstance()
     {
         var weather = new CurrentWeather(
-            _lastUpdated, _temperature, ConditionCode, ConditionText,
+            _lastUpdated, _temperature, ConditionCode, ConditionIcon, ConditionText,
             _wind, Humidity, _feelsLike, 0);
 
         weather.UvIndex.Should().Be(0);

@@ -5,6 +5,7 @@
         public DateTime LastUpdated { get; init; }
         public double TemperatureCelsius { get; init; }
         public int ConditionCode { get; init; }
+        public string ConditionIcon { get; init; } = string.Empty;
         public string ConditionText { get; init; } = string.Empty;
         public double WindSpeedKph { get; init; }
         public int HumidityPercent { get; init; }

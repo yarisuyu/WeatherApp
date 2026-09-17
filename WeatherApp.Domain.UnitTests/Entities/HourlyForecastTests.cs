@@ -10,6 +10,7 @@ public class HourlyForecastTests
     private readonly Temperature _temperature = Temperature.FromCelsius(18.5);
     private readonly WindSpeed _wind = WindSpeed.FromKph(12.0);
     private const int ConditionCode = 1003;
+    private const string ConditionIcon = "https://example.com/partly_cloudy.png";
     private const string ConditionText = "Partly cloudy";
     private const int Humidity = 55;
 
@@ -17,11 +18,12 @@ public class HourlyForecastTests
     public void Constructor_WithValidData_CreatesInstance()
     {
         var forecast = new HourlyForecast(
-            _time, _temperature, ConditionCode, ConditionText, _wind, Humidity);
+            _time, _temperature, ConditionCode, "https://example.com/sunny.png", ConditionText, _wind, Humidity);
 
         forecast.Time.Should().Be(_time);
         forecast.Temperature.Should().Be(_temperature);
         forecast.ConditionCode.Should().Be(ConditionCode);
+        forecast.ConditionIcon.Should().Be("https://example.com/sunny.png");
         forecast.ConditionText.Should().Be(ConditionText);
         forecast.WindSpeed.Should().Be(_wind);
         forecast.HumidityPercent.Should().Be(Humidity);
@@ -33,7 +35,7 @@ public class HourlyForecastTests
     public void Constructor_WhenHumidityOutOfRange_ThrowsArgumentOutOfRangeException(int invalidHumidity)
     {
         Action act = () => new HourlyForecast(
-            _time, _temperature, ConditionCode, ConditionText, _wind, invalidHumidity);
+            _time, _temperature, ConditionCode, ConditionIcon, ConditionText, _wind, invalidHumidity);
 
         act.Should().Throw<ArgumentOutOfRangeException>()
             .WithParameterName("humidityPercent");
@@ -46,7 +48,7 @@ public class HourlyForecastTests
     public void Constructor_WithValidHumidity_CreatesInstance(int humidity)
     {
         var forecast = new HourlyForecast(
-            _time, _temperature, ConditionCode, ConditionText, _wind, humidity);
+            _time, _temperature, ConditionCode, ConditionIcon, ConditionText, _wind, humidity);
 
         forecast.HumidityPercent.Should().Be(humidity);
     }
@@ -55,7 +57,7 @@ public class HourlyForecastTests
     public void Constructor_WithEmptyConditionText_CreatesInstance()
     {
         var forecast = new HourlyForecast(
-            _time, _temperature, ConditionCode, string.Empty, _wind, Humidity);
+            _time, _temperature, ConditionCode, ConditionIcon, string.Empty, _wind, Humidity);
 
         forecast.ConditionText.Should().BeEmpty();
     }

@@ -10,17 +10,6 @@ namespace WeatherApp.Infrastructure.Models
         [JsonPropertyName("forecast")]
         public ForecastContainer Forecast { get; set; } = null!;
     }
-    public class LocationResponse
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; set; } = string.Empty;
-
-        [JsonPropertyName("lat")]
-        public double Lat { get; set; }
-
-        [JsonPropertyName("lon")]
-        public double Lon { get; set; }
-    }
 
     public class ForecastContainer
     {

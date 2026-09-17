@@ -17,7 +17,7 @@ public class ForecastDataTests
             .Select(t => new HourlyForecast(
                 t,
                 Temperature.FromCelsius(15),
-                1000, "Sunny",
+                1000, "https://example.com/sunny.png", "Sunny",
                 WindSpeed.FromKph(5),
                 60))
             .ToList();
@@ -28,16 +28,16 @@ public class ForecastDataTests
     {
         _hourly = new List<HourlyForecast>
         {
-            new(new DateTime(2026, 9, 10, 10, 0, 0), Temperature.FromCelsius(18), 1000, "Sunny", WindSpeed.FromKph(5), 55),
-            new(new DateTime(2026, 9, 10, 12, 0, 0), Temperature.FromCelsius(20), 1000, "Sunny", WindSpeed.FromKph(6), 50),
-            new(new DateTime(2026, 9, 10, 14, 0, 0), Temperature.FromCelsius(22), 1000, "Sunny", WindSpeed.FromKph(7), 45),
+            new(new DateTime(2026, 9, 10, 10, 0, 0), Temperature.FromCelsius(18), 1000, "https://example.com/sunny.png", "Sunny", WindSpeed.FromKph(5), 55),
+            new(new DateTime(2026, 9, 10, 12, 0, 0), Temperature.FromCelsius(20), 1000, "https://example.com/sunny.png", "Sunny", WindSpeed.FromKph(6), 50),
+            new(new DateTime(2026, 9, 10, 14, 0, 0), Temperature.FromCelsius(22), 1000, "https://example.com/sunny.png", "Sunny", WindSpeed.FromKph(7), 45),
         };
 
         _daily = new List<DailyForecast>
         {
-            new(new DateTime(2026, 9, 10), Temperature.FromCelsius(25), Temperature.FromCelsius(15), Temperature.FromCelsius(20), 1000, "Sunny", 0),
-            new(new DateTime(2026, 9, 11), Temperature.FromCelsius(23), Temperature.FromCelsius(14), Temperature.FromCelsius(18), 1003, "Cloudy", 1.5),
-            new(new DateTime(2026, 9, 12), Temperature.FromCelsius(20), Temperature.FromCelsius(12), Temperature.FromCelsius(16), 1063, "Rain", 5.0),
+            new(new DateTime(2026, 9, 10), Temperature.FromCelsius(25), Temperature.FromCelsius(15), Temperature.FromCelsius(20), 1000, "https://example.com/sunny.png", "Sunny", 0),
+            new(new DateTime(2026, 9, 11), Temperature.FromCelsius(23), Temperature.FromCelsius(14), Temperature.FromCelsius(18), 1003, "https://example.com/cloudy.png", "Cloudy", 1.5),
+            new(new DateTime(2026, 9, 12), Temperature.FromCelsius(20), Temperature.FromCelsius(12), Temperature.FromCelsius(16), 1063, "https://example.com/rain.png", "Rain", 5.0),
         };
     }
 

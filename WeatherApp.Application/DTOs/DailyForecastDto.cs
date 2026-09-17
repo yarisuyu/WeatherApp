@@ -7,6 +7,7 @@
         public double MinTemperatureCelsius { get; init; }
         public double AvgTemperatureCelsius { get; init; }
         public int ConditionCode { get; init; }
+        public string ConditionIcon { get; init; } = string.Empty;
         public string ConditionText { get; init; } = string.Empty;
         public double TotalPrecipitationMm { get; init; }
     }
