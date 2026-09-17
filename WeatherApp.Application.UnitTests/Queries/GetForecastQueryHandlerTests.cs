@@ -17,7 +17,7 @@ public class GetForecastQueryHandlerTests
     private readonly Mock<IWeatherDataProvider> _mockProvider;
     private readonly TypeAdapterConfig _config;
     private readonly IMapper _mapper;
-    private readonly GetForecastQueryHandler _handler;
+    private FakeTimeProvider _timeProvider;
 
     public GetForecastQueryHandlerTests()
     {
@@ -26,8 +26,8 @@ public class GetForecastQueryHandlerTests
         _config = new TypeAdapterConfig();
         _config.Apply(new WeatherMappingProfile()); // регистрируем профиль
         _mapper = new Mapper(_config);
-        
-        _handler = new GetForecastQueryHandler(_mockProvider.Object, _mapper);
+
+        _timeProvider = new FakeTimeProvider(DateTimeOffset.Now);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class GetForecastQueryHandlerTests
     {
         // Arrange
         var now = new DateTimeOffset(2026, 9, 10, 12, 0, 0, TimeSpan.FromHours(3));
-        var fakeTime = new FakeTimeProvider(now); // задаём локальное время
+        _timeProvider = new FakeTimeProvider(now); // задаём локальное время
 
         var forecastData = WeatherTestDataFactory.CreateForecastData();
         _mockProvider.Setup(p => p.GetForecastAsync(
@@ -49,11 +49,12 @@ public class GetForecastQueryHandlerTests
         var query = new GetForecastQuery(_location.Latitude, _location.Longitude, 3);
 
         // Act
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var handler = new GetForecastQueryHandler(_mockProvider.Object, _mapper, _timeProvider);
+        var result = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.HourlyForecasts.Should().HaveCount(24); 
+        result.Value.HourlyForecasts.Should().HaveCount(36); 
         result.Value.DailyForecasts.Should().HaveCount(3);
     }
 
@@ -70,7 +71,8 @@ public class GetForecastQueryHandlerTests
             .ThrowsAsync(new Exception("Service unavailable"));
 
         var query = new GetForecastQuery(_location.Latitude, _location.Longitude, 3);
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var handler = new GetForecastQueryHandler(_mockProvider.Object, _mapper, _timeProvider);
+        var result = await handler.Handle(query, CancellationToken.None);
 
         result.IsError.Should().BeTrue();
     }
@@ -89,7 +91,8 @@ public class GetForecastQueryHandlerTests
             .ReturnsAsync(empty);
 
         var query = new GetForecastQuery(_location.Latitude, _location.Longitude, 3);
-        var result = await _handler.Handle(query, CancellationToken.None);
+        var handler = new GetForecastQueryHandler(_mockProvider.Object, _mapper, _timeProvider);
+        var result = await handler.Handle(query, CancellationToken.None);
 
         result.Value.HourlyForecasts.Should().BeEmpty();
         result.Value.DailyForecasts.Should().BeEmpty();
