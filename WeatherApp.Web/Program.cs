@@ -2,7 +2,7 @@ using WeatherApp.Application;
 using WeatherApp.Application.Common.Interfaces;
 using WeatherApp.Infrastructure;
 using WeatherApp.Infrastructure.Services;
-using WeatherApp.Web.Components;
+using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,8 +29,23 @@ app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 
+// Set application culture to Russian (ru-RU)
+var ru = new CultureInfo("ru-RU");
+CultureInfo.DefaultThreadCurrentCulture = ru;
+CultureInfo.DefaultThreadCurrentUICulture = ru;
+
+var supportedCultures = new[] { ru };
+var localizationOptions = new Microsoft.AspNetCore.Builder.RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("ru-RU"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+app.UseRequestLocalization(localizationOptions);
+
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
+app.MapRazorComponents<WeatherApp.Web.Components.App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();

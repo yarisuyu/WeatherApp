@@ -1,0 +1,45 @@
+﻿@using WeatherApp.Application.DTOs
+@using WeatherApp.Web.Components.Shared
+@using WeatherApp.Web.Formatters
+
+<div class="hero-card" data-test="current-weather-card">
+    <div class="hero-top">
+        <div class="hero-location" data-test="location-city">@Data.Location.City</div>
+        <div class="hero-updated">Обновлено @Data.CurrentWeather.LastUpdated.ToHourDisplay()</div>
+    </div>
+
+    <div class="hero-main">
+        <WeatherIcon 
+            ConditionCode="@Data.CurrentWeather.ConditionCode" 
+            ConditionIcon="@Data.CurrentWeather.ConditionIcon" 
+            ConditionText="@Data.CurrentWeather.ConditionText" />
+        <div class="hero-temp" data-test="current-temperature">
+            @Data.CurrentWeather.TemperatureCelsius.ToTemperatureDisplay()
+        </div>
+    </div>
+
+    <div class="hero-condition" data-test="condition-text">@Data.CurrentWeather.ConditionText</div>
+
+    <div class="hero-feels-like">
+        Ощущается как @Data.CurrentWeather.FeelsLikeCelsius.ToTemperatureDisplay()
+    </div>
+
+    <div class="hero-details">
+        <div class="hero-detail">
+            <span class="detail-label">Ветер</span>
+            <span class="detail-value">@Data.CurrentWeather.WindSpeedKph.ToWindDisplayKph()</span>
+        </div>
+        <div class="hero-detail">
+            <span class="detail-label">Влажность</span>
+            <span class="detail-value">@Data.CurrentWeather.HumidityPercent%</span>
+        </div>
+        <div class="hero-detail">
+            <span class="detail-label">UV-индекс</span>
+            <span class="detail-value">@Data.CurrentWeather.UvIndex</span>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public CurrentWeatherResponseDto Data { get; set; } = null!;
+}

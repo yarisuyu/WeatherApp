@@ -1,0 +1,13 @@
+﻿<div class="error-block alert alert-danger" data-test="error-block">
+    <p>@Message</p>
+    <button class="btn btn-primary" @onclick="OnRetryClick" data-test="retry-button">
+        Повторить
+    </button>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Message { get; set; } = string.Empty;
+    [Parameter] public EventCallback OnRetry { get; set; }
+
+    private async Task OnRetryClick() => await OnRetry.InvokeAsync();
+}

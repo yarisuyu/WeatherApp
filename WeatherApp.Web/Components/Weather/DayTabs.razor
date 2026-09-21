@@ -1,0 +1,18 @@
+﻿@using WeatherApp.Application.DTOs
+@using WeatherApp.Web.Formatters
+
+<div class="day-tabs" data-test="day-tabs">
+    @foreach (var day in Days)
+    {
+        <button class="day-tab @(day.Date.Date == ActiveDate.Date ? "active" : "")"
+                @onclick="() => OnDaySelected.InvokeAsync(day.Date)">
+            @day.Date.ToDayTabLabel()
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public List<DailyForecastDto> Days { get; set; } = new();
+    [Parameter] public DateTime ActiveDate { get; set; }
+    [Parameter] public EventCallback<DateTime> OnDaySelected { get; set; }
+}

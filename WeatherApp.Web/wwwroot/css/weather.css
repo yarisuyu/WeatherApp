@@ -1,0 +1,468 @@
+﻿.weather-page {
+    background: var(--bg-app);
+    color: var(--text-primary);
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: clip; /* ← не даёт контенту вылезать, но не создаёт скролл */
+    padding: var(--space-md);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.dashboard-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-width: 0;
+    max-width: 100%;
+}
+
+.hero-slot,
+.hourly-section,
+.daily-section {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Каждый grid-элемент должен сжиматься */
+.dashboard-sections > * {
+    min-width: 0;
+}
+
+/* ============ Заголовки секций ============ */
+.section-title {
+    color: var(--text-primary);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin: 0 0 var(--space-md) 0;
+}
+
+/* --- Табы дней --- */
+.day-tabs {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: var(--space-sm) 0;
+    margin-bottom: var(--space-md);
+}
+
+.day-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.day-tab {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: var(--bg-pill);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.day-tab.active {
+    background: var(--bg-pill-active);
+    color: var(--text-inverse);
+}
+
+/* --- Hero-карточка --- */
+.hero-card {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-card);
+    text-align: center;
+    margin-bottom: var(--space-md);
+}
+
+.hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-md);
+}
+
+.hero-location {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.hero-updated {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.hero-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+}
+
+.hero-temp {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.hero-condition {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.hero-feels-like {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+}
+
+.hero-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid #eef1f6;
+}
+
+.hero-detail {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.detail-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.detail-value {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* --- Сетка часов --- */
+.hourly-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.hourly-section {
+    min-width: 0;              /* ← обязательно */
+    overflow: hidden;          /* ← не даёт карусели вылезать */
+}
+
+/* ============ Карусель ============ */
+.hourly-carousel {
+    display: flex;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory; /* мягкое «прилипание» карточек */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* инерционный скролл на iOS */
+    scroll-padding-left: var(--space-md); /* отступ при прилипании */
+    scroll-snap-type: x mandatory;
+    padding: var(--space-sm) 0;
+    max-width: 100%; /* ← не шире родителя */
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+/* Скрываем скроллбар */
+.hourly-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.hourly-carousel {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hour-card {
+    flex: 0 0 auto; /* не сжимается, не растягивается */
+    width: 100%;
+    min-width: 80px;
+    box-sizing: border-box;
+    scroll-snap-align: start; /* прилипает по левому краю */
+    scroll-margin-left: var(--space-md); /* отступ для scrollIntoView */
+    scroll-snap-align: start;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-sm);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.15s ease;
+}
+
+    .hour-card:hover {
+        transform: translateY(-2px);
+    }
+
+.hour-time {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.hour-temp {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.hour-condition {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* --- Карточка дня --- */
+.day-forecast-card {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    margin-bottom: var(--space-sm);
+}
+
+.day-name {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.day-date {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.day-temps {
+    display: flex;
+    gap: var(--space-md);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+}
+
+.temp-day {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.temp-night {
+    color: var(--text-secondary);
+}
+
+/* --- Метрики --- */
+.metric-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-card);
+    margin-bottom: var(--space-md);
+}
+
+.metric-title {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-md);
+}
+
+.metric-values {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+    text-align: center;
+}
+
+.metric-value .value {
+    display: block;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.metric-value .label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+.metric-details-btn {
+    width: 100%;
+    margin-top: var(--space-md);
+    padding: var(--space-md);
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--bg-pill);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+    .metric-details-btn:hover {
+        background: #e2e6ee;
+    }
+
+/* ============ Тёмная тема ============ */
+.weather-page.theme-dark {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    margin: var(--space-md);
+    overflow: hidden; /* обрезает внутренние элементы по скруглённому контуру */
+    min-height: calc(100vh - var(--space-md) * 2);
+    margin: 0; /* ← убрать отступы */
+    border-radius: 0;
+}
+
+.weather-page.theme-dark .hero-card,
+.weather-page.theme-dark .hour-card,
+.weather-page.theme-dark .day-forecast-card,
+.weather-page.theme-dark .metric-card {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-inverse);
+}
+
+.weather-page.theme-dark .hero-location,
+.weather-page.theme-dark .hero-temp,
+.weather-page.theme-dark .detail-value,
+.weather-page.theme-dark .hour-temp,
+.weather-page.theme-dark .day-name,
+.weather-page.theme-dark .metric-title,
+.weather-page.theme-dark .metric-value .value {
+    color: var(--text-primary);
+}
+
+.weather-page.theme-dark .day-tab {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.weather-page.theme-dark .day-tab.active {
+    background: var(--text-inverse);
+    color: var(--text-primary);
+}
+
+
+
+
+/* ============ Планшет: 2 колонки ============ */
+@media (min-width: 768px) {
+    .weather-page {
+        padding: var(--space-lg);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .hourly-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .hero-card {
+        grid-column: 1 / -1;
+    }
+
+    .hourly-section {
+        grid-column: 1 / -1;
+    }
+
+    .hour-card {
+        min-width: 90px;
+        width: 90px;
+    }
+}
+
+/* ============ Десктоп: 3 колонки ============ */
+@media (min-width: 1200px) {
+    .weather-page {
+        max-width: 1400px;
+        padding: var(--space-xl);
+    }
+
+        .weather-page.theme-dark {
+            border-radius: var(--radius-lg);
+            margin: var(--space-md);
+            min-height: calc(100vh - var(--space-md) * 2);
+            overflow: hidden;
+        }
+
+    .dashboard-sections {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        gap: var(--space-lg);
+        align-items: start;
+    }
+
+    .hero-slot {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .hourly-section {
+        grid-column: 1 / -1; /* на всю ширину */
+        grid-row: 2;
+        overflow: hidden;
+    }
+
+    .daily-section {
+        grid-column: 2;
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .hero-card {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+    }
+
+    .hourly-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .hourly-carousel {
+        margin: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .hour-card {
+        min-width: 100px;
+        width: 100px;
+    }
+
+    .day-forecast-card {
+        grid-template-columns: 1.5fr auto auto;
+    }
+}

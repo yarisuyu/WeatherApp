@@ -1,0 +1,173 @@
+﻿@page "/"
+@using WeatherApp.Application.DTOs
+@using WeatherApp.Application.Queries
+@using WeatherApp.Web.Components.Shared
+@using WeatherApp.Web.Components.Weather
+@inject IMediator Mediator
+@inject ILogger<WeatherDashboard> Logger
+@inject IJSRuntime JS
+
+<PageTitle>Погода в Москве</PageTitle>
+
+<div class="weather-page theme-dark">
+
+    @if (_forecast is not null)
+    {
+        <DayTabs Days="_forecast.DailyForecasts"
+                 ActiveDate="_selectedDate"
+                 OnDaySelected="OnDaySelected" />
+    }
+
+    <div class="dashboard-sections">
+        <div class="hero-slot">
+            @if (_currentLoading)
+            {
+                <LoadingSpinner />
+            }
+            else if (_currentError is not null)
+            {
+                <ErrorWithRetry Message="_currentError" OnRetry="LoadCurrentWeather" />
+            }
+            else if (_currentWeather is not null)
+            {
+                <CurrentWeatherCard Data="_currentWeather" />
+            }
+        </div>
+
+        <section class="hourly-section">
+            @if (_forecastLoading)
+            {
+                <LoadingSpinner />
+            }
+            else if (_forecastError is not null)
+            {
+                <ErrorWithRetry Message="_forecastError" OnRetry="LoadForecast" />
+            }
+            else if (_forecast is not null)
+            {
+                <h3 class="section-title">Почасовой прогноз</h3>
+                <div class="hourly-carousel" id="hourly-carousel" data-carousel="hourly" data-test="hourly-carousel">
+                    @foreach (var h in _forecast.HourlyForecasts.OrderBy(x => x.Time))
+                    {
+                        <HourlyForecastCard Data="h" />
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="daily-section">
+            @if (_forecast is not null)
+            {
+                @foreach (var d in _forecast.DailyForecasts)
+                {
+                    <DailyForecastCard Data="d" />
+                }
+            }
+        </section>
+    </div>
+</div>
+
+@code {
+    private const double MoscowLat = 55.7558;
+    private const double MoscowLon = 37.6173;
+
+    private CurrentWeatherResponseDto? _currentWeather;
+    private ForecastResponseDto? _forecast;
+
+    private DateTime _selectedDate = DateTime.Today;
+
+    private bool _currentLoading = true;
+    private bool _forecastLoading = true;
+    private string? _currentError;
+    private string? _forecastError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll(LoadCurrentWeather(), LoadForecast());
+    }
+
+    private IJSObjectReference? _carouselModule;
+
+    private async Task OnDaySelected(DateTime date)
+    {
+        _selectedDate = date.Date;
+
+        // Прокручиваем карусель к первому часу выбранного дня
+        var targetId = $"hour-{date:yyyy-MM-dd}T00";
+
+        if (_carouselModule is not null)
+        {
+            await _carouselModule.InvokeVoidAsync("scrollToHour", targetId);
+        }
+        else
+        {
+            // fallback — глобальный объект (на случай, если модуль не был загружен)
+            await JS.InvokeVoidAsync("weatherCarousel.scrollToHour", targetId);
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task LoadCurrentWeather()
+    {
+        _currentLoading = true;
+        _currentError = null;
+        try
+        {
+            Console.WriteLine("Send current query");
+            var result = await Mediator.Send(new GetCurrentWeatherQuery(MoscowLat, MoscowLon));
+            if (result.IsError)
+            {
+                _currentError = result.FirstError.Description;
+
+                Console.WriteLine("Error: ", _currentError);
+                Logger.LogWarning("Ошибка загрузки текущей погоды: {Error}", _currentError);
+            }
+            else
+            {
+                _currentWeather = result.Value;
+                Console.WriteLine("Got current weather: ", _currentWeather?.ToString());
+            }
+
+    }
+        catch (Exception ex)
+        {
+            _currentError = "Не удалось загрузить текущую погоду.";
+            Logger.LogError(ex, "Ошибка при загрузке текущей погоды");
+        }
+        finally
+        {
+            _currentLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadForecast()
+    {
+        _forecastLoading = true;
+        _forecastError = null;
+        try
+        {
+            var result = await Mediator.Send(new GetForecastQuery(MoscowLat, MoscowLon, 3));
+            if (result.IsError)
+            {
+                _forecastError = result.FirstError.Description;
+                Logger.LogWarning("Ошибка загрузки прогноза: {Error}", _forecastError);
+            }
+            else
+            {
+                _forecast = result.Value;
+            }
+        }
+        catch (Exception ex)
+        {
+            _forecastError = "Не удалось загрузить прогноз.";
+            Logger.LogError(ex, "Ошибка при загрузке прогноза");
+        }
+        finally
+        {
+            _forecastLoading = false;
+            StateHasChanged();
+        }
+    }
+}

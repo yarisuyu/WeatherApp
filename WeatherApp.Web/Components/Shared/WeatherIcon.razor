@@ -1,0 +1,11 @@
+﻿<img src="@ConditionIcon"
+     alt="@ConditionText"
+     class="weather-icon"
+     data-test="weather-icon" />
+
+@code {
+    [Parameter] public int ConditionCode { get; set; }
+    [Parameter] public string ConditionIcon { get; set; } = string.Empty;
+    [Parameter] public string ConditionText { get; set; } = string.Empty;
+    [Parameter] public bool IsDay { get; set; } = true;
+}

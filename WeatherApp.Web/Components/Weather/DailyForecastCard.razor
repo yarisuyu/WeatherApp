@@ -1,0 +1,21 @@
+﻿@using WeatherApp.Application.DTOs
+@using WeatherApp.Web.Components.Shared
+@using WeatherApp.Web.Formatters
+
+<div class="day-forecast-card" data-test="day-card">
+    <div class="day-info">
+        <div class="day-name">@Data.Date.ToDayDisplay()</div>
+        <div class="day-date">@Data.Date.ToShortDate()</div>
+    </div>
+
+    <WeatherIcon ConditionCode="@Data.ConditionCode" ConditionIcon="@Data.ConditionIcon" ConditionText="@Data.ConditionText" />
+
+    <div class="day-temps">
+        <span class="temp-day">@Data.MaxTemperatureCelsius.ToTemperatureDisplay()</span>
+        <span class="temp-night">@Data.MinTemperatureCelsius.ToTemperatureDisplay()</span>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DailyForecastDto Data { get; set; } = null!;
+}

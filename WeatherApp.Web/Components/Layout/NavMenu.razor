@@ -1,24 +1,22 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">WeatherApp.Web</a>
+﻿<nav class="nav-menu @(IsOpen ? "open" : "")" role="navigation" aria-hidden="false">
+    <div class="nav-header">
+        <span class="nav-brand">Sun&Rain</span>
+        <button class="nav-close" @onclick="Close" aria-label="Закрыть">✕</button>
     </div>
-</div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+    <div class="nav-items">
+        <NavLink class="nav-link" href="/" Match="NavLinkMatch.All" @onclick="Close">
+            <span class="bi bi-house-door-fill"></span> Текущая погода
+        </NavLink>
+    </div>
+</nav>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Текущая погода
-            </NavLink>
-            <NavLink class="nav-link" href="hourly" Match="NavLinkMatch.Prefix">
-                <span class="bi bi-clock-history"></span> Почасовой прогноз
-            </NavLink>
-            <NavLink class="nav-link" href="daily" Match="NavLinkMatch.Prefix">
-                <span class="bi bi-clock-history"></span> Прогноз на 3 дня
-            </NavLink>
-        </div>
-    </nav>
-</div>
+@code {
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
 
+    private Task Close()
+    {
+        return OnClose.HasDelegate ? OnClose.InvokeAsync(null) : Task.CompletedTask;
+    }
+}

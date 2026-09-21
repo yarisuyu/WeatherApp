@@ -1,0 +1,14 @@
+﻿@using WeatherApp.Application.DTOs
+@using WeatherApp.Web.Components.Shared
+@using WeatherApp.Web.Formatters
+
+<div class="hour-card" id="hour-@Data.Time.ToString("yyyy-MM-ddTHH")" data-test="hour-card">
+    <div class="hour-time">@Data.Time.ToHourDisplay()</div>
+    <WeatherIcon ConditionCode="@Data.ConditionCode" ConditionIcon="@Data.ConditionIcon" ConditionText="@Data.ConditionText" />
+    <div class="hour-temp">@Data.TemperatureCelsius.ToTemperatureDisplay()</div>
+    <div class="hour-condition">@Data.ConditionText</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public HourlyForecastDto Data { get; set; } = null!;
+}

@@ -1,0 +1,19 @@
+﻿@using WeatherApp.Application.DTOs
+
+<div class="hourly-grid" data-test="hourly-forecast-grid">
+    @if (!Forecasts.Any())
+    {
+        <p class="text-muted">Нет данных для отображения.</p>
+    }
+    else
+    {
+        @foreach (var hour in Forecasts)
+        {
+            <HourlyForecastCard Data="hour" />
+        }
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public List<HourlyForecastDto> Forecasts { get; set; } = new();
+}
