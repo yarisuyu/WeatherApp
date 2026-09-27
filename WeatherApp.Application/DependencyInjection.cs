@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Mapster;
 using MapsterMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using WeatherApp.Application.Common.Interfaces;
@@ -10,7 +11,9 @@ namespace WeatherApp.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
+        public static IServiceCollection AddApplication(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -31,8 +34,11 @@ namespace WeatherApp.Application
             });
 
             services.AddMemoryCache();
+            services.Configure<WeatherDataProviderOptions>(
+                configuration.GetSection(WeatherDataProviderOptions.SectionName));
+            services.AddSingleton(TimeProvider.System);
             services.AddScoped<IWeatherDataProvider, WeatherDataProvider>();
-            
+
             // Регистрация FluentValidation
             services.AddValidatorsFromAssembly(assembly);
 
